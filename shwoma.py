@@ -142,7 +142,7 @@ def arrangeList():
     for word in uniqList:
         fd.write(word)
     fd.close()
-    print "[!]%d words in list" % len(uniqList)
+    print "[*] %d words in list" % len(uniqList)
 
 
 threads = 10
@@ -151,13 +151,17 @@ links = getNewLinks(links)
 newLinks = Queue.Queue()
 try:
     fd = open('/usr/share/shwoma/wordlist.txt', 'a')
+    print "[*] Adding to wordlist.."
 except:
     try:
         fd = open('/usr/share/shwoma/wordlist.txt', 'w')
+        print "[*] Wordlist not found! Creating a new wordlist.."
     except:
-        print "[!]error: cannot open 'wordlist.txt'"
+        print "[!] Error: cannot open 'wordlist.txt'"
+numberOfNewLinks = len(links)
 for link in links:
     newLinks.put(link)
+print "[*] Scraping %d new links" % numberOfNewLinks
 threadList = []
 for i in range(threads):
     t = threading.Thread(target=addWords)
@@ -166,4 +170,5 @@ for thread in threadList:
     thread.start()
 for thread in threadList:
     thread.join()
+print "[*] Re-ordering the wordlist.."
 arrangeList()
